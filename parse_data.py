@@ -1,10 +1,6 @@
 import csv
 import numpy as np
 import pandas as pd
-from sklearn import preprocessing
-from sklearn.preprocessing import OneHotEncoder
-from imputer import *
-
 
 def clean_data(path):
     with open(path, 'rb') as csvfile:
