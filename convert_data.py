@@ -1,3 +1,4 @@
+import numpy as np
 convert_features = [{'1': 'Emergency', '2': 'Emergency', '3': 'Elective', '4':'Newborn', '5': 'NotAvailable',
                      '6': 'NotAvailable', '7': 'TraumaCenter', '8': 'NotAvailable'},
                     {'1':'dis_home',
@@ -44,3 +45,49 @@ def redefine_data(data):
         for d in data:
            d[feature] = convert_features[feature-3][d[feature]]
     return data
+
+
+def update_diagnosis(data):
+    for record in data:
+        for i in [13, 14,15]:
+            record[i] = get_daignosis_value(record[i],i-12)
+    return data
+
+def get_daignosis_value(s,i):
+    count = 0
+    if s.isdigit():
+        temp = s.astype(np.float)
+        if (temp >= 390.0 and temp < 460.0) or (temp == 785.0):
+            return str(i)+"Circulatory"
+        elif (temp >= 460 and temp < 520) or (temp == 786.0):
+            return str(i)+"Respiratory"
+        elif (temp >= 520.0 and temp < 580) or (temp == 787):
+            return str(i)+"Digestive"
+        elif (temp >= 250.0 and temp < 251):
+            return str(i)+"Diabetes"
+        elif (temp >= 800.0 and temp < 1000):
+            return str(i)+"Injury"
+        elif (temp >= 710.0 and temp < 740.0):
+            return str(i)+"Musculoskeletal"
+        elif (temp >= 580.0 and temp < 630.0) or (temp == 788.0):
+            return str(i)+"Genitourinary"
+        elif (temp >= 140 and temp <240.0) or temp == 780.0 or temp == 781.0 or temp == 784.0 or \
+                (temp >= 790 and temp < 800) or (temp >=240.0 and temp <280.0) or (temp >= 680.0 and temp <710)\
+                or temp ==782.0 or (temp>= 1 and temp < 140):
+            return str(i)+"Neoplasms"
+        else:
+            return str(i)+"Other"
+    else:
+        if s == "?":
+            return str(i)+"Circulatory"
+        else:
+            return str(i)+"Other"
+
+cols = ['max_glu_s', 'a1c', 'met', 'glime', 'glip', 'gly', 'pio', 'rosi', 'insulin', 'change', 'diab_med']
+def add_col_names(data):
+    index = 0
+    for i in range(17, 28):
+        for record in data:
+            record[i] = cols[i-17] + record[i]
+    return  data
+
